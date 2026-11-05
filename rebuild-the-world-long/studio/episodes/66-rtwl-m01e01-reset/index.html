@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>REBUILD THE WORLD long-form (16:9)</title>
+<style>
+  html, body { margin: 0; background: #111; }
+  canvas { display: block; width: 960px; height: 540px; margin: 12px auto; }
+</style>
+<script>
+  // 16:9 long-form: layout 1920x1080; ?px=1 renders full HD, default 0.6667 -> 1280x720
+  const q = new URLSearchParams(location.search);
+  globalThis.TOON_W = 1920; globalThis.TOON_H = 1080;
+  globalThis.TOON_PX = q.has('px') ? +q.get('px') : 0.6667;
+  globalThis.TOON_FPS = 24;
+</script>
+<script type="importmap">
+  { "imports": { "three": "/node_modules/three/build/three.module.js",
+                 "three/addons/": "/node_modules/three/examples/jsm/",
+                 "toonkit": "/lib/toonkit.js" } }
+</script>
+</head>
+<body>
+<script type="module" src="./scene.js"></script>
+</body>
+</html>

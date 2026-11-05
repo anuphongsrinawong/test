@@ -290,6 +290,16 @@ export function runLong(cfg) {
       // the far places' painted walls fade at their edges and leave the sky showing at the corners (a pale vertical bar
       // in 16:9 frames): widen them so neighbouring walls overlap
       for (const W of A.walls) if (W.place) W.m.scale.x = cfg.wallWiden ?? 1.35;
+      // cfg.talk: Zero speaks the lines himself - his mouth flaps on the voice's words (voice.json marks are absolute times), not in pauses
+      let VO = null;
+      if (cfg.talk) try { const r = await fetch('voice.json', { cache: 'no-store' }); if (r.ok) VO = await r.json(); } catch { /* no voice yet */ }
+      const talking = (li, u) => {
+        const v = VO?.lines?.[li]; if (!v || lines[li].talk === false || !v.marks?.length) return false;
+        const m = v.marks; if (u < m[0][1] - 0.05 || u > m[m.length - 1][1] + 0.28) return false;
+        let k = 0; while (k + 1 < m.length && m[k + 1][1] <= u) k++;
+        const nxt = m[k + 1] ? m[k + 1][1] : m[k][1] + 0.28;
+        return nxt - m[k][1] < 0.5 || u - m[k][1] < 0.3;
+      };
       const K = { api, Wd, A, T, ground, gyAt, toWorld, lines };
       REF.K = K;
       const ep = cfg.build ? await cfg.build(K) : {};
@@ -305,6 +315,10 @@ export function runLong(cfg) {
           // atlas terrain: lift the camera by the ground height under the subject
           if (at !== 'WILD' && at !== 'LAB') { const sp = s.c?.spot || s.z?.at || [0, 0]; api.camera.position.y += gyAt(at, sp[0], sp[1]); api.camera.updateMatrixWorld(true); }
           const spec = zeroSpec(s, u, d, t);
+          if (cfg.talk && spec && spec !== HIDE && spec.P?.face && talking(li, t)) {
+            const lv = Math.sin(t * 17.3) + 0.6 * Math.sin(t * 9.1 + 1.7);
+            spec.P.face = { ...spec.P.face, mouth: lv > 0.55 ? 'talk2' : lv > -0.45 ? 'talk1' : 'o-small' };
+          }
           const S = { li, s, u, d, at, look, place, cast, rig: cast.zero.rig, camera: api.camera, spec };
           if (ep.pose) { const r = ep.pose(t, S); if (r !== undefined) S.spec = r; }
           direct(t, cast, { zero: S.spec }, api.camera);

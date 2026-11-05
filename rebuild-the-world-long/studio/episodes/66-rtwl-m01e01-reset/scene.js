@@ -1,4 +1,4 @@
-// 66-rtwl-m01e01-reset - REBUILD THE WORLD (long-form, 16:9, Thai) · ภารกิจ 01 ตอน 01.01
+// 66-rtwl-m01e01-reset - REBUILD THE WORLD (long-form, 16:9, English narration; Thai original in scene_th.js.txt) · ภารกิจ 01 ตอน 01.01
 // "โลกถูกรีเซ็ต: สำรวจพื้นที่และความเสี่ยง" (roadmap: Rebuild_The_World_400_Episode_Roadmap.md, Season Survive From Zero)
 // Viewer question: the world is reset and Zero has nothing - what must he do FIRST? Answer: know the land (survey from
 // high ground, split it by direction, ask three questions everywhere), then pick a base site that passes all three -
@@ -114,7 +114,7 @@ const lines = [
   { id: 'level', n: "But a river also has currents, and a water level that can change with the rain.",
     z: { at: LK, y: LKY, yaw: E - 0.3, act: 'stand', face: 'curious', hand: 'chin' }, cam: { pos: [11.4, 4.0, -23.0], look: [8.0, 3.7, -24.0], to: { pos: [11.1, 4.0, -23.1], look: [8.0, 3.7, -24.0] } }, fov: 46 },
   { id: 'south', n: "And to the south, a long, tall cliff stands like a wall, with a green hill in front of it.",
-    z: { at: LK, y: LKY, yaw: 0, act: 'stand', face: 'surprised', hand: 'point' }, cam: { pos: [9.2, 4.8, -28.4], look: [6, 5.0, 125], to: { pos: [9.0, 4.85, -27.9], look: [6, 5.0, 125] } }, fov: 50 },
+    z: { at: LK, y: LKY, yaw: 0, act: 'stand', face: 'surprised', hand: 'point' }, cam: { pos: [9.0, 4.1, -28.4], look: [6, 4.7, 125], to: { pos: [8.9, 4.15, -27.9], look: [6, 4.7, 125] } }, fov: 50 },
   { id: 'cliff', n: "Cliffs give shade and stone. But rocks can also fall from above.",
     z: { at: LK, y: LKY, yaw: 0.25, act: 'stand', face: 'worried' }, cam: { pos: [8.9, 4.0, -20.6], look: [8.0, 3.7, -24.0], to: { pos: [8.85, 4.0, -20.9], look: [8.0, 3.7, -24.0] } }, fov: 46 },
   { id: 'plan', n: "Now Zero has the big picture. The next step is to go down and check each place for real.",
@@ -127,9 +127,9 @@ const lines = [
   { id: 'remember', n: "Vines like these could be used for tying things later. Zero remembers this spot.",
     z: { at: VINE, yaw: Wd + 0.6, act: 'stand', face: 'proud', hand: 'think' }, c: [-0.6, 3.8, 1.7, 1.6, -0.3, 0], c2: [-0.7, 3.4, 1.7, 1.7, -0.3, 0] },
   { id: 'berry', n: "There's a bush full of bright red berries. They look delicious. But Zero stops his hand.",
-    z: { at: [BERRY[0] + 0.85, BERRY[1] + 0.35], yaw: Wd - 0.35, act: 'reachstop', face: 'happy', o: { stopAt: 3.1, reachY: 0.95 } }, c: [0.55, 3.2, 1.3, 1.0, -0.4, -0.1], sfx: [['pop', 1.0, -10], ['sting_fail', 3.2, -16]] },
+    z: { at: [BERRY[0] + 1.3, BERRY[1] + 0.45], yaw: Wd - 0.35, act: 'reachstop', face: 'happy', o: { stopAt: 3.1, reachY: 0.95 } }, c: [0.55, 3.2, 1.3, 1.0, -0.4, -0.1], sfx: [['pop', 1.0, -10], ['sting_fail', 3.2, -16]] },
   { id: 'poison', n: "Unknown fruit can be poisonous. The simple rule: if you're not one hundred percent sure, don't eat it.",
-    z: { at: [BERRY[0] + 0.85, BERRY[1] + 0.35], yaw: Wd + 0.2, act: 'stand', face: 'determined', hand: 'stop' }, c: [-0.1, 3.4, 1.4, 1.3, -0.4, 0] },
+    z: { at: [BERRY[0] + 1.3, BERRY[1] + 0.45], yaw: Wd + 0.2, act: 'stand', face: 'determined', hand: 'stop' }, c: [-0.1, 3.4, 1.4, 1.3, -0.4, 0] },
   { id: 'deep', n: "Deeper in the jungle, light barely reaches the ground. Every direction looks the same.", at: 'DEEPJUNGLE', via: 'flash',
     z: { at: [0.7, -2], yaw: 0.3, act: 'stand', face: 'worried', o: { scan: 0.9 } }, cam: { pos: [1.5, 1.7, 3.8], look: [0.4, 2.6, -40], to: { pos: [1.2, 1.7, 2.6], look: [0.4, 2.8, -40] } }, fov: 50, sfx: [['e19_mystery_shimmer', 0.5, -18]] },
   { id: 'marks', n: "Zero snaps small branches so they hang down, every so often. Markers to find his way back.", at: 'DEEPJUNGLE',
@@ -184,9 +184,9 @@ const lines = [
   { id: 'line', n: "Dead leaves caught in the reeds line up at the same height too. Every sign points to the same answer.", at: 'BEND',
     z: { at: [3.0, 1.2], yaw: 1.2, act: 'stand', face: 'worried', hand: 'point' }, cam: { pos: [1.2, 1.6, 5.4], look: [-3.0, 1.2, 2.6], to: { pos: [1.0, 1.6, 5.0], look: [-3.0, 1.4, 2.6] } }, fov: 48 },
   { id: 'wash', n: "If he built his base here, one night of heavy rain could wash everything away. Including him.", at: 'BEND',
-    z: { at: [3.0, 2.8], from: [0.8, 0.6], yaw: 0.8, act: 'walk', face: 'frustrated' }, cam: { pos: [-1.6, 1.6, 4.0], look: [2.0, 1.1, 1.0], to: { pos: [-1.2, 1.6, 4.4], look: [2.4, 1.1, 1.6] } }, fov: 48, sfx: [['e03_cold_wind', 1.0, -14]] },
+    z: { at: [2.0, 3.6], from: [0.8, 0.6], yaw: 0.8, act: 'walk', face: 'frustrated' }, cam: { pos: [-1.6, 1.6, 4.0], look: [2.0, 1.1, 1.0], to: { pos: [-1.2, 1.6, 4.4], look: [2.4, 1.1, 1.6] } }, fov: 48, sfx: [['e03_cold_wind', 1.0, -14]] },
   { id: 'lesson', n: "Lesson one: the place that looks the most convenient can be the most dangerous.", gap: 0.8, at: 'BEND',
-    z: { at: [3.0, 2.8], yaw: 0.2, act: 'stand', face: 'determined', hand: 'think' }, c: [0.3, 3.6, 1.7, 1.6], c2: [0.3, 3.2, 1.7, 1.7] },
+    z: { at: [2.0, 3.6], yaw: 0.2, act: 'stand', face: 'determined', hand: 'think' }, c: [0.3, 3.6, 1.7, 1.6], c2: [0.3, 3.2, 1.7, 1.7] },
   // ============================================================ FIX + TEST 7:45-9:15 (the meadow rise)
   { id: 'back', n: "Zero heads back to the meadow, near the big tree he saw this morning.", via: 'flash', clock: 'DAY 1 · 16:30',
     z: { at: TREEZ, from: [0.0, 1.5], yaw: N + 0.6, act: 'walk', face: 'determined' }, c: [0.7, 9.0, 2.4, 2.6, -1.0, -1.0], c2: [0.75, 8.0, 2.4, 2.8, -1.0, -1.0], fov: 50 },
@@ -241,7 +241,7 @@ runLong({
     { at: L('ew', 2.6), until: L('nesw', 3.0), to: () => LABEL_AT.W(), text: 'WEST', dir: 'ul', color: '#ffd23f', size: 44 },
     { at: L('ew', 3.4), until: L('nesw', 3.0), to: () => LABEL_AT.E(), text: 'EAST', dir: 'ur', color: '#5ae8ff', size: 44 },
     { at: L('scree', 0.6), until: L('shelter'), to: () => LABEL_AT.SCREE(), text: 'FALLEN ROCK', dir: 'ur', color: '#ff8a2a', size: 44 },
-    { at: L('tracks', 1.0), until: L('late'), to: () => LABEL_AT.TRACKS(), text: 'ANIMAL TRACKS', dir: 'ur', color: '#ff8a2a', size: 44 },
+    { at: L('tracks', 1.0), until: L('late'), to: () => LABEL_AT.TRACKS(), text: 'ANIMAL TRACKS', dir: 'ul', color: '#ff8a2a', size: 44 },
     { at: L('debris', 2.6), until: L('flood'), to: () => LABEL_AT.DEBRIS(), text: 'DEBRIS IN THE BUSH', dir: 'ul', color: '#ff5a4a', size: 44 },
     { at: L('flood', 3.2), until: L('drift'), to: () => LABEL_AT.HWM(), text: 'HIGHEST WATER', dir: 'ur', color: '#ff5a4a', size: 46 },
     { at: L('under', 0.5), until: L('drift'), to: () => LABEL_AT.SANDLAB(), text: 'SANDBAR = UNDERWATER', dir: 'dl', color: '#5ae8ff', size: 44 },
@@ -269,7 +269,7 @@ runLong({
       { kind: 'list', at: L('test1', 0.2), until: L('map'), side: 'right', title: 'TESTING THE SITE', w: 700,
         items: [{ text: 'Wood: < 5 min away', at: L('test1', 3.6) }, { text: 'River close by', at: L('test1', 6.0) }, { text: 'Above the flood line', at: L('test2', 1.6) },
           { text: 'Away from falling rock', at: L('test2', 3.0) }, { text: 'Not under dead branches', at: L('test2', 4.2) }, { text: 'Clear view, easy escape', at: L('test3', 2.8) }] },
-      { kind: 'unlock', at: L('unlock', 0.2), dur: 5.0, title: 'SURVEY MAP + BASE SITE', sub: 'Carried into the next episode', y: 0.28 },
+      { kind: 'unlock', at: L('unlock', 0.2), dur: 3.9, title: 'SURVEY MAP + BASE SITE', sub: 'Carried into the next episode', y: 0.28 },
       { kind: 'next', at: L('next', 1.4), dur: 4.6, sub: 'NEXT · 01.02', title: 'FINDING WATER: IS CLEAR ALWAYS SAFE?' },
     ],
   },

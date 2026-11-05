@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { V, clamp, lerp, range, sstep, eio, eout, eback, rng } from 'toonkit';
 import { box, cyl, sph, nf, put, group, glow } from '/lib/diorama.js';
-import { W3, LB3, canvasPlane, dashLine, bush, ZN } from '/series/rtw/kit/index.js';
+import { W3, LB3, canvasPlane, dashLine, bush, ZN, Z } from '/series/rtw/kit/index.js';
 import { ground, REF } from '/series/rtw/long/longkit.js';
 
 const PI = Math.PI;
@@ -16,11 +16,16 @@ const CUPS = [22.4, -1.0], POOL = [-1.2, -6.0], SEEP = [3.3, 1.0];
 const FONT = '"Leelawadee UI", Prompt, Tahoma, sans-serif';
 export const LABEL_AT = {
   MUD: () => W3(CUPS[0] - 0.22, 0.7, CUPS[1]), CLEAR: () => W3(CUPS[0] + 0.22, 0.7, CUPS[1]),
-  SED: () => LB3(-0.55, 1.65, 0.6), MIC: () => LB3(0.5, 2.35, 0.6), HAIR: () => LB3(-1.4, 2.0, 0.1), BAC: () => LB3(0.9, 1.95, 0.1),
+  SED: () => LB3(-0.55, 1.65, 0.6), MIC: () => LB3(0.5, 2.35, 0.6), HAIR: () => LB3(-1.4, 2.0, 0.1), BAC: () => LB3(0.9, 1.74, 0.1),
   ANIMAL: () => LB3(-1.55, 2.25, 0.05), RTRACKS: () => W3(25.0, 0.05, -5.0), LARVA: () => ground('DEEPJUNGLE', POOL[0] - 0.05, POOL[1] + 0.05, 0.02),
   PTRACKS: () => ground('DEEPJUNGLE', POOL[0] - 0.9, POOL[1] - 0.9, 0.05), SEEP: () => ground('WATERFALL', SEEP[0] - 0.25, SEEP[1], 1.45),
   LAYERS: () => LB3(-0.9, 1.6, 0.05),
 };
+// lines where Zero holds the leaf cup; when his right hand is busy (think / stop / shade / point / raise) the cup goes to the left hand
+const HELD = ['river', 'measure', 'senses', 'back', 'tracks', 'mid', 'puddle', 'dip', 'settle', 'fail1', 'rapids', 'slip', 'pool', 'best', 'kneel', 'wiggle', 'leak', 'test', 'sip', 'real', 'ragged', 'sharp'];
+const BUSY_R = ['think', 'stop', 'shade', 'point', 'raise', 'chin'];
+const cupLeft = (s) => HELD.includes(s.id) && BUSY_R.includes(s.z?.hand);
+const CROUCH_HOLD = ['five', 'rank', 'wiggle', 'clean'];   // a crouch that continues the previous line's crouch (no stand-up bob at the line start)
 const ink = (c, w, col = 'rgba(45,26,10,1)') => { c.strokeStyle = col; c.lineWidth = w * 1.6; c.lineCap = 'round'; c.lineJoin = 'round'; };
 // a leaf cone (the torn leaf cup): a green cone with a ragged rim + optional water disc
 function leafCup(parent, { water = null } = {}) {
@@ -55,9 +60,9 @@ export async function buildEp(K, IX) {
       ink(c, 9); c.beginPath(); c.arc(cw * 0.48, ch * 0.5, cw * 0.06, 0, 7); c.stroke();
     }, false);
     // new: a drop (the seep, near the waterfall at the river's upstream end: bottom right), a circle (river, OK), X on the pool (west), X on the puddle
-    layer((c, cw, ch) => { ink(c, 8, 'rgba(30,70,120,0.95)'); const drop = (x, y, s) => { c.beginPath(); c.moveTo(x, y - s); c.quadraticCurveTo(x + s * 0.8, y + s * 0.2, x, y + s * 0.6); c.quadraticCurveTo(x - s * 0.8, y + s * 0.2, x, y - s); c.stroke(); }; drop(cw * 0.92, ch * 0.9, 26); }, true);
-    layer((c, cw, ch) => { ink(c, 7, 'rgba(30,70,120,0.95)'); c.beginPath(); c.arc(cw * 0.82, ch * 0.55, 22, 0, 7); c.stroke(); }, true);
-    layer((c, cw, ch) => { ink(c, 9, 'rgba(150,30,20,0.95)'); for (const [x, y] of [[0.16, 0.42], [0.78, 0.3]]) { c.beginPath(); c.moveTo(cw * x - 20, ch * y - 20); c.lineTo(cw * x + 20, ch * y + 20); c.moveTo(cw * x + 20, ch * y - 20); c.lineTo(cw * x - 20, ch * y + 20); c.stroke(); } }, true);
+    layer((c, cw, ch) => { ink(c, 8, 'rgba(45,26,10,1)'); const drop = (x, y, s) => { c.beginPath(); c.moveTo(x, y - s); c.quadraticCurveTo(x + s * 0.8, y + s * 0.2, x, y + s * 0.6); c.quadraticCurveTo(x - s * 0.8, y + s * 0.2, x, y - s); c.stroke(); }; drop(cw * 0.92, ch * 0.9, 26); }, true);
+    layer((c, cw, ch) => { ink(c, 7, 'rgba(45,26,10,1)'); c.beginPath(); c.arc(cw * 0.82, ch * 0.55, 22, 0, 7); c.stroke(); }, true);
+    layer((c, cw, ch) => { ink(c, 9, 'rgba(45,26,10,1)'); for (const [x, y] of [[0.16, 0.42], [0.78, 0.3]]) { c.beginPath(); c.moveTo(cw * x - 20, ch * y - 20); c.lineTo(cw * x + 20, ch * y + 20); c.moveTo(cw * x + 20, ch * y - 20); c.lineTo(cw * x - 20, ch * y + 20); c.stroke(); } }, true);
     const bs = group(scene, ...W3(MAPC[0] - 0.04, -0.05, MAPC[1]).toArray()); put(bs, cyl(0.014, 0.02, 0.9, 7), wood, 0, 0.45, 0, 0.0015, true); }
   P.drawStick = group(scene); put(P.drawStick, cyl(0.012, 0.018, 0.75, 7), wood, 0, 0.37, 0, 0.0015, true);
   // ================================================================ the cold open: two leaf cups on a flat stone at the river
@@ -70,7 +75,7 @@ export async function buildEp(K, IX) {
   P.cup = leafCup(scene, { water: 0x9fd8f0 }); P.cup.userData.water.visible = false;
   P.cup2 = leafCup(scene, { water: 0x9fd8f0 });
   // ================================================================ river: animal tracks to the water's edge
-  { const tr = canvasPlane(scene, 1.2, 2.6, (c, cw, ch) => { c.fillStyle = 'rgba(70,50,34,0.85)'; for (let i = 0; i < 9; i++) { const x = cw * (0.3 + 0.35 * (i % 2)), y = ch * (0.06 + i * 0.11); c.beginPath(); c.ellipse(x, y, cw * 0.07, ch * 0.022, 0.3, 0, 7); c.fill(); c.beginPath(); c.ellipse(x - cw * 0.04, y - ch * 0.03, cw * 0.02, ch * 0.012, 0, 0, 7); c.fill(); c.beginPath(); c.ellipse(x + cw * 0.04, y - ch * 0.03, cw * 0.02, ch * 0.012, 0, 0, 7); c.fill(); } }, { px: 256 });
+  { const tr = canvasPlane(scene, 1.2, 2.6, (c, cw, ch) => { c.fillStyle = 'rgba(38,24,12,0.95)'; for (let i = 0; i < 9; i++) { const x = cw * (0.3 + 0.38 * (i % 2)), y = ch * (0.06 + i * 0.11); c.beginPath(); c.ellipse(x, y, cw * 0.11, ch * 0.032, 0.3, 0, 7); c.fill(); c.beginPath(); c.ellipse(x - cw * 0.07, y - ch * 0.045, cw * 0.035, ch * 0.018, 0, 0, 7); c.fill(); c.beginPath(); c.ellipse(x + cw * 0.07, y - ch * 0.045, cw * 0.035, ch * 0.018, 0, 0, 7); c.fill(); } }, { px: 256 });
     tr.material.transparent = true; tr.rotation.set(-PI / 2, 0, -1.0); tr.position.copy(W3(25.4, 0.04, -5.2)); }
   // ================================================================ clay bank: a muddy puddle
   { const p = ground('CLAYBANK', 0.5, -7.6, 0.02); const pd = put(scene, new THREE.CircleGeometry(0.95, 28), new THREE.MeshBasicMaterial({ color: 0x8a6a40 }), p.x, p.y, p.z, 0); pd.rotation.x = -PI / 2; pd.scale.set(1.3, 0.85, 1);
@@ -112,13 +117,13 @@ export async function buildEp(K, IX) {
     for (let i = 0; i < 26; i++) { const v = new THREE.Vector3(R() - 0.5, R() - 0.5, R() - 0.5).normalize().multiplyScalar(0.8 * Math.cbrt(R())); const m = put(P.drop, new THREE.CapsuleGeometry(0.018, 0.05, 3, 6), nf([0xff5a4a, 0xff9a3a, 0xc85aff][i % 3]), v.x, v.y, v.z, 0.001); m.rotation.set(R() * 3, R() * 3, 0); P.mic.push(m); } }
   // 2) the scale: a hair (a thick rod) vs a bacterium (a speck)
   P.hair = put(lab, cyl(0.12, 0.12, 3.4, 18), nf(0x3a2a20), 0, 2.0, 0, 0.003); P.hair.rotation.z = PI / 2; P.hair.visible = false;
-  P.bac = put(lab, new THREE.CapsuleGeometry(0.012, 0.03, 3, 6), nf(0xff5a4a), 0.9, 1.88, 0.15, 0.001); P.bac.rotation.z = 0.6; P.bac.visible = false;
-  P.bacRing = put(lab, new THREE.RingGeometry(0.07, 0.085, 24), new THREE.MeshBasicMaterial({ color: 0xff5a4a, transparent: true, opacity: 0.9 }), 0.9, 1.88, 0.16, 0); P.bacRing.visible = false;
+  P.bac = put(lab, new THREE.CapsuleGeometry(0.012, 0.03, 3, 6), nf(0xff5a4a), 0.9, 1.7, 0.15, 0.001); P.bac.rotation.z = 0.6; P.bac.visible = false;
+  P.bacRing = put(lab, new THREE.RingGeometry(0.07, 0.085, 24), new THREE.MeshBasicMaterial({ color: 0xff5a4a, transparent: true, opacity: 0.9 }), 0.9, 1.7, 0.16, 0); P.bacRing.visible = false;
   // 3) the river diagram: upstream (left) an animal at the water, the current carrying dots downstream (right)
   P.riverD = holo(4.0, 1.8, (c, cw, ch) => {
     c.fillStyle = 'rgba(10,40,60,0.75)'; c.beginPath(); c.roundRect(8, 8, cw - 16, ch - 16, 40); c.fill(); c.lineWidth = 8; c.strokeStyle = '#7fe8ff'; c.stroke();
     c.fillStyle = 'rgba(60,170,230,0.85)'; c.beginPath(); c.moveTo(cw * 0.05, ch * 0.5); c.bezierCurveTo(cw * 0.35, ch * 0.3, cw * 0.6, ch * 0.75, cw * 0.95, ch * 0.5); c.lineTo(cw * 0.95, ch * 0.68); c.bezierCurveTo(cw * 0.6, ch * 0.92, cw * 0.35, ch * 0.48, cw * 0.05, ch * 0.68); c.closePath(); c.fill();
-    c.fillStyle = '#ffd23f'; c.font = `800 ${ch * 0.1}px ${FONT}`; c.textAlign = 'center'; c.fillText('UPSTREAM', cw * 0.14, ch * 0.2); c.fillText('DOWNSTREAM', cw * 0.84, ch * 0.2);
+    c.fillStyle = '#ffd23f'; c.font = `800 ${ch * 0.085}px ${FONT}`; c.textAlign = 'center'; c.fillText('UPSTREAM', cw * 0.18, ch * 0.2); c.fillText('DOWNSTREAM', cw * 0.8, ch * 0.2);
     c.fillStyle = '#c89a6a'; c.beginPath(); c.ellipse(cw * 0.12, ch * 0.4, cw * 0.05, ch * 0.06, 0, 0, 7); c.fill(); c.beginPath(); c.arc(cw * 0.17, ch * 0.33, ch * 0.04, 0, 7); c.fill();
     for (let i = 0; i < 4; i++) { c.fillRect(cw * (0.09 + i * 0.022), ch * 0.44, cw * 0.008, ch * 0.08); }
     c.strokeStyle = '#ffffff'; c.lineWidth = 6; c.beginPath(); c.moveTo(cw * 0.3, ch * 0.58); c.lineTo(cw * 0.8, ch * 0.6); c.stroke(); c.beginPath(); c.moveTo(cw * 0.76, ch * 0.54); c.lineTo(cw * 0.8, ch * 0.6); c.lineTo(cw * 0.76, ch * 0.66); c.stroke();
@@ -167,11 +172,11 @@ export async function buildEp(K, IX) {
       const pick = tAt('leaf', 2.6);
       P.leafFlat.visible = id === 'leaf' && t > pick || id === 'fold' && t < tAt('fold', 2.2);
       if (P.leafFlat.visible) { P.leafFlat.position.copy(id === 'fold' ? handsMid(rig) : rig.handR.position); P.leafFlat.rotation.set(0.3, rig.root.rotation.y, 0.2); }
-      const held = (id === 'fold' && t >= tAt('fold', 2.2)) || ['river', 'measure', 'senses', 'back', 'tracks', 'mid', 'puddle', 'dip', 'settle', 'fail1', 'rapids', 'slip', 'pool', 'best', 'kneel', 'wiggle', 'leak', 'test', 'sip', 'real', 'ragged', 'sharp'].includes(id);
+      const held = (id === 'fold' && t >= tAt('fold', 2.2)) || HELD.includes(id);
       P.cup.visible = held && S.spec;
       if (P.cup.visible) {
         const two = ['kneel', 'wiggle', 'leak', 'test', 'sip', 'river', 'dip', 'fold'].includes(id);
-        P.cup.position.copy(two ? handsMid(rig) : rig.handR.position).add(V(0, -0.06, 0)); P.cup.rotation.set(0, rig.root.rotation.y, 0);
+        P.cup.position.copy(two ? handsMid(rig) : cupLeft(lines[S.li]) ? rig.handL.position : rig.handR.position).add(V(0, -0.06, 0)); P.cup.rotation.set(0, rig.root.rotation.y, 0);
         const full = ['kneel', 'wiggle', 'measure', 'senses', 'leak', 'test', 'sip'].includes(id) || (id === 'river' && t > tAt('river', 1.3)) || (id === 'dip' && t > tAt('dip', 1.3));
         P.cup.userData.water.visible = full; P.cup.userData.water.material.color.setHex(id === 'dip' ? 0x8a6438 : 0x9fd8f0);
         if (id === 'wiggle') P.cup.rotation.z = 0;
@@ -196,9 +201,9 @@ export async function buildEp(K, IX) {
       }
       P.hair.visible = inL(t, 'eye', 'virus'); P.bac.visible = P.bacRing.visible = inL(t, 'bact', 'virus');
       if (P.bacRing.visible) P.bacRing.scale.setScalar(1 + 0.15 * Math.sin(t * 6));
-      P.riverD.visible = inL(t, 'from', 'criteria');
-      P.flow.forEach((m, i) => { m.visible = inL(t, 'downstream', 'criteria') && t > tAt('downstream', 1.5); if (!m.visible) return; const k = ((t * 0.25 + i / 10) % 1); m.position.set(lerp(-1.3, 1.3, k), 1.83 + 0.12 * Math.sin(k * 6), 0.06); });
-      P.poolD.visible = inL(t, 'labpool', 'worst');
+      P.riverD.visible = inL(t, 'from', 'warm');
+      P.flow.forEach((m, i) => { m.visible = inL(t, 'downstream', 'warm') && t > tAt('downstream', 1.5); if (!m.visible) return; const k = ((t * 0.25 + i / 10) % 1); m.position.set(lerp(-1.3, 1.3, k), 1.83 + 0.12 * Math.sin(k * 6), 0.06); });
+      P.poolD.visible = inL(t, 'warm', 'criteria') || inL(t, 'labpool', 'worst');
       P.gwD.visible = inL(t, 'ground', 'nodirt');
       const ped = !(P.riverD.visible || P.poolD.visible || P.gwD.visible || P.hair.visible); const lb = REF.Wd?.lab; if (lb) { lb.ped.visible = ped; lb.rim.visible = ped; }
     },
@@ -206,6 +211,15 @@ export async function buildEp(K, IX) {
       const id = lines[S.li].id;
       // 'place': reach the cup under the drips with both hands
       if (id === 'place' && S.spec?.P) { const k = sstep(range(S.u, 0.4, 1.2)); S.spec.P.handR = V(-0.08, lerp(0.95, 0.75, k), lerp(0.2, 0.62, k)); S.spec.P.handL = V(0.08, lerp(0.95, 0.75, k), lerp(0.2, 0.62, k)); }
+      if (CROUCH_HOLD.includes(id) && S.spec?.P) {
+        const P0 = S.spec.P, z = lines[S.li].z || {};
+        Object.assign(P0, Z.crouch(0.95, { pos: P0.pos, yaw: P0.yaw, face: P0.face, headPitch: z.o?.pitch ?? 0.45 }));
+        if (id === 'wiggle') { P0.handR = V(-0.08, 1.02, 0.44); P0.handL = V(0.08, 1.02, 0.44); P0.headPitch = 0.6; }
+        if (id === 'clean') { P0.handR = V(-0.08, 0.75, 0.62); P0.handL = V(0.08, 0.75, 0.62); }
+      }
+      // at the seep: squat upright (no forward lean) so the head stays clear of the crack and the falling drips
+      if ((id === 'place' || id === 'clean') && S.spec?.P) { S.spec.P.hipsRX = 0.04; S.spec.P.headPitch = Math.min(S.spec.P.headPitch || 0, 0.25); }
+      if (cupLeft(lines[S.li]) && S.spec?.P) S.spec.P.handL = V(0.3, 1.12, 0.36);
       if (id === 'dump' && S.spec?.P) { const k = sstep(range(S.u, 0.2, 0.7)); S.spec.P.handR = V(-0.3, lerp(1.2, 1.0, k), 0.5); S.spec.P.handL = V(0.2, 1.0, 0.3); }
       return undefined;
     },
